@@ -1,14 +1,18 @@
 import React from 'react';
-import { Text, View } from 'react-native';
-import LoginScreen from './src/screens/LoginScreen';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback, useEffect } from 'react';
 
 import { ApplicationProvider } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 import { useFonts } from 'expo-font';
+import Navigation from './src/navigation';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ApiClientProvider } from './src/provider/ApiClientProvider';
 
 SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient();
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -36,10 +40,14 @@ export default function App() {
   }
 
   return (
-    <View onLayout={onLayoutRootView}>
-      <ApplicationProvider {...eva} theme={eva.light}>
-        <LoginScreen />
-      </ApplicationProvider>
-    </View>
+    <ApplicationProvider {...eva} theme={eva.light}>
+      <ApiClientProvider>
+        <QueryClientProvider client={queryClient}>
+          <SafeAreaProvider>
+            <Navigation />
+          </SafeAreaProvider>
+        </QueryClientProvider>
+      </ApiClientProvider>
+    </ApplicationProvider>
   );
 }

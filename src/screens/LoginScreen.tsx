@@ -2,10 +2,20 @@ import React, { FC, useState } from 'react';
 import { Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, View } from 'react-native';
 import usePallete from '../hooks/usePallete';
 import { Input, Button } from '@ui-kitten/components';
+import useAuthLogin from '../features/auth/api/useAuthLogin';
+import { useAuth } from '../provider/AuthProvider';
 
 const LoginScreen: FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const { user } = useAuth();
+
+  // const { mutateAsync } = useAuthLogin();
+
+  // const onLogin = async () => {
+  //   await mutateAsync({ email, password });
+  // };
 
   return (
     <View
@@ -76,9 +86,17 @@ const LoginScreen: FC = () => {
             secureTextEntry
             onChangeText={(nextValue: string) => setPassword(nextValue)}
           />
-          <Button appearance="filled" status="success" style={{ width: '100%', borderRadius: 20 }}>
+          <Button
+            appearance="filled"
+            status="success"
+            style={{ width: '100%', borderRadius: 20 }}
+            // onPress={onLogin}
+          >
             Log In
           </Button>
+          <Text>{user?.name}</Text>
+          <Text>{user?.email}</Text>
+          <Text>{user?.password}</Text>
         </View>
       </KeyboardAvoidingView>
     </View>
