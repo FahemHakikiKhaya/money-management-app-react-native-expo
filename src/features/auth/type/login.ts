@@ -3,8 +3,6 @@ interface AuthLoginProps {
   password: string;
 }
 
-interface AuthLoginResponse {
-  email: string;
-  name: string;
-  password: string;
+interface AuthLoginResponse extends User {
+  accessToken: string;
 }

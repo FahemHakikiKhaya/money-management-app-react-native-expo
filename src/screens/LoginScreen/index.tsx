@@ -1,21 +1,19 @@
 import React, { FC, useState } from 'react';
-import { Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, View } from 'react-native';
-import usePallete from '../hooks/usePallete';
+import { Image, KeyboardAvoidingView, Text, View } from 'react-native';
+import usePallete from '../../hooks/usePallete';
 import { Input, Button } from '@ui-kitten/components';
-import useAuthLogin from '../features/auth/api/useAuthLogin';
-import { useAuth } from '../provider/AuthProvider';
+import useAuthLogin from '../../features/auth/api/useAuthLogin';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-const LoginScreen: FC = () => {
+const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { user } = useAuth();
+  const { mutateAsync } = useAuthLogin();
 
-  // const { mutateAsync } = useAuthLogin();
-
-  // const onLogin = async () => {
-  //   await mutateAsync({ email, password });
-  // };
+  const onLogin = async () => {
+    await mutateAsync({ email, password });
+  };
 
   return (
     <View
@@ -37,7 +35,7 @@ const LoginScreen: FC = () => {
           }}
         >
           <Image
-            source={require('../../assets/wallet-icon.png')}
+            source={require('../../../assets/wallet-icon.png')}
             style={{
               width: 250,
               height: 250,
@@ -74,13 +72,19 @@ const LoginScreen: FC = () => {
           </Text>
 
           <Input
-            style={{ borderRadius: 20, backgroundColor: 'transparent' }}
+            textStyle={{ color: 'white' }}
+            style={{
+              borderRadius: 20,
+              backgroundColor: 'transparent',
+              width: '100%',
+            }}
             placeholder="Email"
             value={email}
             onChangeText={(nextValue: string) => setEmail(nextValue)}
           />
           <Input
-            style={{ borderRadius: 20, backgroundColor: 'transparent' }}
+            textStyle={{ color: 'white' }}
+            style={{ borderRadius: 20, backgroundColor: 'transparent', width: '100%' }}
             placeholder="Password"
             value={password}
             secureTextEntry
@@ -90,13 +94,10 @@ const LoginScreen: FC = () => {
             appearance="filled"
             status="success"
             style={{ width: '100%', borderRadius: 20 }}
-            // onPress={onLogin}
+            onPress={onLogin}
           >
             Log In
           </Button>
-          <Text>{user?.name}</Text>
-          <Text>{user?.email}</Text>
-          <Text>{user?.password}</Text>
         </View>
       </KeyboardAvoidingView>
     </View>

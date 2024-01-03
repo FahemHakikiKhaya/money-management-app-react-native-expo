@@ -1,15 +1,15 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthStack from './auth';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ApiClientProvider } from '../provider/ApiClientProvider';
-import { ApplicationProvider } from '@ui-kitten/components';
-import * as eva from '@eva-design/eva';
+import { useAuth } from '../provider/AuthProvider';
+import MainScreenNavigation from './main';
 
 const Navigation = () => {
+  const { signed } = useAuth();
+
   return (
     <NavigationContainer>
-      <AuthStack />
+      {signed ? <MainScreenNavigation /> : <AuthStack />}
     </NavigationContainer>
   );
 };
