@@ -33,7 +33,6 @@ const BottomNavigationBar: React.FC<BottomTabBarProps> = ({
     >
       <BottomNavigationTab title="Home" icon={HomeIcon} />
       <BottomNavigationTab title="Transaction" icon={CartIcon} />
-      <BottomNavigationTab title="Statistics" icon={ChartIcon} />
     </BottomNavigation>
   );
 };

@@ -1,8 +1,13 @@
-import { Text } from '@ui-kitten/components';
-import React from 'react';
+import { Icon, Text } from '@ui-kitten/components';
+import { format } from 'date-fns';
+import React, { FC } from 'react';
 import { Image, View } from 'react-native';
 
-const TransactionCard = () => {
+const TransactionCard: FC<{
+  data: GetTransaksiResponse;
+  type: 'Income' | 'Expense';
+}> = ({ data, type }) => {
+  console.log(data.transaksiKategori.icon);
   return (
     <View
       style={{
@@ -15,12 +20,16 @@ const TransactionCard = () => {
         borderRadius: 10,
       }}
     >
-      <Image
-        source={{
-          uri: 'https://reactnative.dev/img/tiny_logo.png',
+      <Icon
+        name="shopping-bag-outline"
+        style={{
+          width: 30,
+          height: 30,
+          flexDirection: 'row',
+          alignItems: 'center',
+          padding: 8,
+          backgroundColor: '#F7F7F7',
         }}
-        style={{ flex: 0.1, width: '100%', height: '100%' }}
-        resizeMode="contain"
       />
       <View
         style={{
@@ -31,10 +40,22 @@ const TransactionCard = () => {
         }}
       >
         <View style={{ flexDirection: 'column' }}>
-          <Text>Rental Income</Text>
-          <Text>14 July 2021</Text>
+          <Text style={{ fontWeight: 700, fontSize: 18 }}>
+            {data.name}
+          </Text>
+          <Text>
+            {format(new Date(data.createdAt), 'dd MMMMM yyyy')}
+          </Text>
         </View>
-        <Text>$-300.49</Text>
+        <Text
+          style={{
+            color: type === 'Income' ? 'green' : 'red',
+            fontWeight: 500,
+          }}
+        >
+          {type === 'Income' ? '+ $' : '- $'}
+          {data.amount}
+        </Text>
       </View>
     </View>
   );

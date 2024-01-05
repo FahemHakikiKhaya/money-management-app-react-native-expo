@@ -14,7 +14,7 @@ const TransactionStack = () => {
   return (
     <Navigator>
       <Screen
-        options={{ title: 'All Transaction' }}
+        options={{ title: 'Transaction' }}
         name="Transaction"
         component={TransactionScreen}
       />

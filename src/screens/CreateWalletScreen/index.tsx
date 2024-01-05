@@ -137,7 +137,14 @@ const CreateWalletScreen = ({
                 setFieldValue('description', nextValue)
               }
             />
-            <Button onPress={() => handleSubmit()}>Add Wallet</Button>
+            <Button
+              onPress={() => {
+                handleSubmit();
+                navigation.goBack();
+              }}
+            >
+              Add Wallet
+            </Button>
           </View>
         )}
       </Formik>

@@ -1,26 +1,20 @@
-import React, { FC, PropsWithChildren } from 'react';
+import React, { CSSProperties, FC, PropsWithChildren } from 'react';
 import { View } from 'react-native';
 
-export const Container: FC<PropsWithChildren> = ({ children }) => {
+export const Container: FC<
+  PropsWithChildren & { style?: CSSProperties }
+> = ({ children, style }) => {
   return (
     <View
       style={{
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
+        maxWidth: 500,
+        width: '100%',
+        paddingHorizontal: 20,
+        paddingVertical: 40,
+        ...style,
       }}
     >
-      <View
-        style={{
-          maxWidth: 500,
-          width: '100%',
-          paddingHorizontal: 20,
-          paddingVertical: 40,
-        }}
-      >
-        {children}
-      </View>
-      ;
+      {children}
     </View>
   );
 };

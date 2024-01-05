@@ -1,27 +1,29 @@
-import React, { FC, useState } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useState } from 'react';
+import { AuthStackNavigatorParamList } from '../../navigation/auth';
 import {
   Image,
   KeyboardAvoidingView,
   Pressable,
-  Text,
   View,
 } from 'react-native';
-import usePallete from '../../hooks/usePallete';
-import { Input, Button } from '@ui-kitten/components';
-import useAuthLogin from '../../features/auth/api/useAuthLogin';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AuthStackNavigatorParamList } from '../../navigation/auth';
+import { Button, Input, Text } from '@ui-kitten/components';
+import useAuthRegister from '../../features/auth/api/useAuthRegister';
 
-const LoginScreen = ({
+const RegisterScreen = ({
   navigation,
-}: NativeStackScreenProps<AuthStackNavigatorParamList, 'Login'>) => {
+}: NativeStackScreenProps<
+  AuthStackNavigatorParamList,
+  'Register'
+>) => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { mutateAsync } = useAuthLogin();
+  const { mutateAsync } = useAuthRegister();
 
-  const onLogin = async () => {
-    await mutateAsync({ email, password });
+  const onRegister = async () => {
+    await mutateAsync({ email, password, name });
   };
 
   return (
@@ -44,7 +46,7 @@ const LoginScreen = ({
           }}
         >
           <Image
-            source={require('../../../assets/wallet-icon.png')}
+            source={require('../../../assets/register-icon.png')}
             style={{
               width: 250,
               height: 250,
@@ -55,30 +57,33 @@ const LoginScreen = ({
             style={{
               fontFamily: 'inter',
               color: 'white',
-              fontSize: 40,
+              fontSize: 35,
             }}
           >
-            AturDompetKu
-          </Text>
-          <Text
-            style={{
-              color: 'white',
-              fontSize: 20,
-              fontWeight: 600,
-            }}
-          >
-            Welcome Back
+            Register For Free!
           </Text>
 
           <Text
             style={{
-              fontFamily: 'Inter-Thin',
+              fontWeight: 20,
               color: 'white',
               fontSize: 16,
             }}
           >
-            Please Log into your existing account
+            Fill the Following Form to Continue
           </Text>
+
+          <Input
+            textStyle={{ color: 'white' }}
+            style={{
+              borderRadius: 20,
+              backgroundColor: 'transparent',
+              width: '100%',
+            }}
+            placeholder="Name"
+            value={name}
+            onChangeText={(nextValue: string) => setName(nextValue)}
+          />
 
           <Input
             textStyle={{ color: 'white' }}
@@ -109,29 +114,27 @@ const LoginScreen = ({
             appearance="filled"
             status="success"
             style={{ width: '100%', borderRadius: 20 }}
-            onPress={onLogin}
+            onPress={onRegister}
           >
-            Log In
+            Register
           </Button>
-          <Text style={{ color: 'white' }}>
-            Dont have an Account?{' '}
-            <Pressable onPress={() => navigation.push('Register')}>
-              <span
-                style={{
-                  color: 'white',
-                  textDecoration: 'underline',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                }}
-              >
-                Click Here to Register
-              </span>
-            </Pressable>
-          </Text>
+
+          <Pressable onPress={() => navigation.goBack()}>
+            <Text
+              style={{
+                color: 'white',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+                fontWeight: 600,
+              }}
+            >
+              Go Back to Login Screen
+            </Text>
+          </Pressable>
         </View>
       </KeyboardAvoidingView>
     </View>
   );
 };
 
-export default LoginScreen;
+export default RegisterScreen;

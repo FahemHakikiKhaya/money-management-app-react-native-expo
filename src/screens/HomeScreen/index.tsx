@@ -1,5 +1,5 @@
 import { Button, Text } from '@ui-kitten/components';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import { Image, ScrollView, View } from 'react-native';
 import Container from '../../components/Container';
 import usePallete from '../../hooks/usePallete';
@@ -9,13 +9,31 @@ import { useGetWallet } from '../../features/wallet/api/useGetWallet';
 import { MainScreenNavigatorParamlist } from '../../navigation/main';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackNavigatorParamList } from '../../navigation/main/navigation/Home';
+import { useAuth } from '../../provider/AuthProvider';
+import useGetTransaksi from '../../features/transaksi/api/useGetTransaksi';
+import { useIsFocused } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen = ({
   navigation,
 }: NativeStackScreenProps<HomeStackNavigatorParamList, 'Home'>) => {
   const pallete = usePallete();
 
-  const { data: dataWallets } = useGetWallet();
+  const { data: dataWallets, refetch: refetchWallet } =
+    useGetWallet();
+  const {
+    data: dataPreviousTransaction,
+    refetch: refetchPreviousTransaction,
+  } = useGetTransaksi({
+    limit: 4,
+  });
+  const { user } = useAuth();
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    isFocused && refetchWallet();
+  }, [isFocused]);
 
   const totalBalance = useMemo(() => {
     let totalBalanceCount = 0;
@@ -28,43 +46,78 @@ const HomeScreen = ({
     <Container>
       <Text
         style={{
-          fontFamily: 'inter-semibold',
-          fontSize: 20,
+          fontSize: 25,
+          fontWeight: 500,
           marginBottom: 16,
         }}
       >
-        TOTAL BALANCE
+        Welcome Back, {user.name || 'Guest'}
       </Text>
       <Text
         style={{
-          fontFamily: 'inter',
+          fontSize: 20,
+          fontWeight: 400,
+          marginBottom: 16,
+        }}
+      >
+        Total Balance:
+      </Text>
+      <Text
+        style={{
           fontSize: 40,
-          color: pallete.primary,
+          fontWeight: 700,
         }}
       >
         ${totalBalance}
       </Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={{ flexDirection: 'row', columnGap: 20 }}>
-          {React.Children.toArray(
-            dataWallets?.map((wallet) => <WalletCard {...wallet} />),
-          )}
-        </View>
-      </ScrollView>
+      {dataWallets?.length ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginTop: 20 }}
+        >
+          <View style={{ flexDirection: 'row', columnGap: 20 }}>
+            {React.Children.toArray(
+              dataWallets?.map((wallet) => (
+                <WalletCard {...wallet} />
+              )),
+            )}
+          </View>
+        </ScrollView>
+      ) : (
+        <Text style={{ marginTop: 20 }}>
+          You don't have any wallet, Create your first wallet to track
+          your financial life
+        </Text>
+      )}
 
       <Button
         style={{
-          marginTop: 40,
+          marginTop: 20,
         }}
         onPress={() => navigation.push('CreateWallet')}
       >
         Add Wallet
       </Button>
-      <View style={{ flexDirection: 'column', marginTop: 70 }}>
-        <Text style={{ marginBottom: 16 }}>
-          Previous Transactions
-        </Text>
-        <TransactionCard />
+      <Text style={{ fontSize: 20, fontWeight: 500, marginTop: 16 }}>
+        Previous Transaction
+      </Text>
+      <View
+        style={{
+          flexDirection: 'column',
+          rowGap: 10,
+          marginTop: 20,
+        }}
+      >
+        {dataPreviousTransaction?.length ? (
+          React.Children.toArray(
+            dataPreviousTransaction?.map((data) => (
+              <TransactionCard data={data} type="Expense" />
+            )),
+          )
+        ) : (
+          <Text>You don't have any transaction this month.</Text>
+        )}
       </View>
     </Container>
   );
